@@ -1,1 +1,1 @@
-{"buildTargets":["dist","docker-cleanup","make","test-clickhouse","test-e2e","test-e2e-mysql","test-e2e-postgres","test-packages"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
+{"buildTargets":["dist","docker-cleanup","test-clickhouse","test-e2e","test-e2e-mysql","test-e2e-postgres","test-packages"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
