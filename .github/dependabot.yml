@@ -7,14 +7,14 @@ updates:
       interval: "weekly"
       day: "saturday"
     assignees:
-      - "mfridman"
+      - "kedric"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "saturday"
     assignees:
-      - "mfridman"
+      - "kedric"
     ignore:
       # For deps, ignore all patch updates
       - dependency-name: "*"
