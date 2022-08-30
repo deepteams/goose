@@ -2,6 +2,6 @@
 .DS_Store
 *.swp
 *.test
-
+.vscode
 # Files output by tests
 /bin

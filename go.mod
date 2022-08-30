@@ -1,4 +1,4 @@
-module github.com/deepteams/goose/v3
+module github.com/pressly/goose/v3
 
 go 1.17
 
@@ -10,7 +10,7 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1
 	github.com/ory/dockertest/v3 v3.9.1
 	github.com/ziutek/mymysql v1.5.4
-	modernc.org/sqlite v1.18.0
+	modernc.org/sqlite v1.17.3
 )
 
 require (
