@@ -54,21 +54,22 @@ func SetDialect(d string) error {
 type PostgresDialect struct{}
 
 func (pg PostgresDialect) createVersionTableSQL() string {
-	return fmt.Sprintf(`CREATE TABLE %s (
+	return fmt.Sprintf(`CREATE TABLE db_migration_version (
             	id serial NOT NULL,
                 version_id bigint NOT NULL,
                 is_applied boolean NOT NULL,
+                table_name text NOT NULL,
                 tstamp timestamp NULL default now(),
                 PRIMARY KEY(id)
-            );`, TableName())
+            );`)
 }
 
 func (pg PostgresDialect) insertVersionSQL() string {
-	return fmt.Sprintf("INSERT INTO %s (version_id, is_applied) VALUES ($1, $2);", TableName())
+	return fmt.Sprintf("INSERT INTO db_migration_version (version_id, is_applied, table_name) VALUES ($1, $2, %s);", TableName())
 }
 
 func (pg PostgresDialect) dbVersionQuery(db *sql.DB) (*sql.Rows, error) {
-	rows, err := db.Query(fmt.Sprintf("SELECT version_id, is_applied from %s ORDER BY id DESC", TableName()))
+	rows, err := db.Query(fmt.Sprintf("SELECT version_id, is_applied from db_migration_version WHERE table_name='%s' ORDER BY id DESC", TableName()))
 	if err != nil {
 		return nil, err
 	}
@@ -77,11 +78,11 @@ func (pg PostgresDialect) dbVersionQuery(db *sql.DB) (*sql.Rows, error) {
 }
 
 func (m PostgresDialect) migrationSQL() string {
-	return fmt.Sprintf("SELECT tstamp, is_applied FROM %s WHERE version_id=$1 ORDER BY tstamp DESC LIMIT 1", TableName())
+	return fmt.Sprintf("SELECT tstamp, is_applied FROM db_migration_version WHERE version_id=$1 AND table_name = '%s' ORDER BY tstamp DESC LIMIT 1", TableName())
 }
 
 func (pg PostgresDialect) deleteVersionSQL() string {
-	return fmt.Sprintf("DELETE FROM %s WHERE version_id=$1;", TableName())
+	return fmt.Sprintf("DELETE FROM db_migration_version WHERE version_id=$1 AND table_name = '%s';", TableName())
 }
 
 ////////////////////////////
@@ -92,21 +93,22 @@ func (pg PostgresDialect) deleteVersionSQL() string {
 type MySQLDialect struct{}
 
 func (m MySQLDialect) createVersionTableSQL() string {
-	return fmt.Sprintf(`CREATE TABLE %s (
+	return fmt.Sprintf(`CREATE TABLE db_migration_version (
                 id serial NOT NULL,
                 version_id bigint NOT NULL,
                 is_applied boolean NOT NULL,
+				table_name text NOT NULL,
                 tstamp timestamp NULL default now(),
                 PRIMARY KEY(id)
-            );`, TableName())
+            );`)
 }
 
 func (m MySQLDialect) insertVersionSQL() string {
-	return fmt.Sprintf("INSERT INTO %s (version_id, is_applied) VALUES (?, ?);", TableName())
+	return fmt.Sprintf("INSERT INTO db_migration_version (version_id, is_applied, table_name) VALUES (?, ?, %s);", TableName())
 }
 
 func (m MySQLDialect) dbVersionQuery(db *sql.DB) (*sql.Rows, error) {
-	rows, err := db.Query(fmt.Sprintf("SELECT version_id, is_applied from %s ORDER BY id DESC", TableName()))
+	rows, err := db.Query(fmt.Sprintf("SELECT version_id, is_applied from db_migration_version WHERE  table_name = '%s' ORDER BY id DESC", TableName()))
 	if err != nil {
 		return nil, err
 	}
@@ -115,11 +117,11 @@ func (m MySQLDialect) dbVersionQuery(db *sql.DB) (*sql.Rows, error) {
 }
 
 func (m MySQLDialect) migrationSQL() string {
-	return fmt.Sprintf("SELECT tstamp, is_applied FROM %s WHERE version_id=? ORDER BY tstamp DESC LIMIT 1", TableName())
+	return fmt.Sprintf("SELECT tstamp, is_applied FROM db_migration_version WHERE version_id=? AND table_name = '%s' ORDER BY tstamp DESC LIMIT 1", TableName())
 }
 
 func (m MySQLDialect) deleteVersionSQL() string {
-	return fmt.Sprintf("DELETE FROM %s WHERE version_id=?;", TableName())
+	return fmt.Sprintf("DELETE FROM db_migration_version WHERE version_id=? AND table_name = '%s';", TableName())
 }
 
 ////////////////////////////
