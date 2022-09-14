@@ -104,7 +104,7 @@ func (m MySQLDialect) createVersionTableSQL() string {
 }
 
 func (m MySQLDialect) insertVersionSQL() string {
-	return fmt.Sprintf("INSERT INTO db_migration_version (version_id, is_applied, table_name) VALUES (?, ?, %s);", TableName())
+	return fmt.Sprintf("INSERT INTO db_migration_version (version_id, is_applied, table_name) VALUES (?, ?, '%s');", TableName())
 }
 
 func (m MySQLDialect) dbVersionQuery(db *sql.DB) (*sql.Rows, error) {
